@@ -1,0 +1,14 @@
+.container {
+  padding: 10px;
+  background: rgb(232, 232, 232);
+  inline-size: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 60% 1fr 1fr;
+  gap: 10px;
+  border-radius: 5px;
+  align-items: center;
+}
+
+.line {
+  border-left: 1px solid black;
+}
