@@ -36,7 +36,28 @@ const Form = ({ handleChange, addApplication, appInfo }) => {
         value={appInfo.work}
         placeholder="Что нужно сделать?"
       />
-      <button className={styles.add} type="submit">Add application</button>
+      <div className={styles.time}>
+        <input
+          onChange={handleChange}
+          className={styles.containerItem}
+          type="date"
+          name="date"
+          value={appInfo.date}
+          placeholder="Дата"
+        />
+        <input
+          onChange={handleChange}
+          className={styles.containerItem}
+          type="time"
+          name="time"
+          value={appInfo.time}
+          placeholder="Время"
+        />
+      </div>
+
+      <button className={styles.add} type="submit">
+        Отправить заявку
+      </button>
     </form>
   );
 };

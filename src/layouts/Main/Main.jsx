@@ -7,23 +7,20 @@ import Preloader from "../../components/Preloader/Preloader";
 
 const Main = () => {
   const [applications, setApplications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [appInfo, setAppInfo] = useState({
     company: "",
     name: "",
     place: "",
     work: "",
+    date: "",
   });
+  const [updatedAppInfo, setUpdatedAppInfo] = useState({ ...appInfo });
+  const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get("https://6862c75696f0cc4e34baf165.mockapi.io/applications")
-      .then((response) => {
-        setApplications(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
+  const handleClickEditing = () => {
+    setIsEditing(!isEditing);
+  };
 
   const handleChange = (e) => {
     setAppInfo({ ...appInfo, [e.target.name]: e.target.value });
@@ -47,12 +44,12 @@ const Main = () => {
     } catch (err) {
       console.error("Ошибка загрузки данных:", err.message);
     }
-
     setAppInfo({
       company: "",
       name: "",
       place: "",
       work: "",
+      date: "",
     });
   };
 
@@ -61,17 +58,53 @@ const Main = () => {
       await axios.delete(
         `https://6862c75696f0cc4e34baf165.mockapi.io/applications/${id}`
       );
-
-      // Удаляем элемент из состояния
       setApplications((prevItems) =>
         prevItems.filter((item) => item.id !== id)
       );
-
       console.log("Элемент успешно удален");
     } catch (error) {
       console.error("Ошибка при удалении:", error);
     }
   };
+
+  const changeAppInfo = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `https://6862c75696f0cc4e34baf165.mockapi.io/applications/${updatedAppInfo.id}`,
+        updatedAppInfo,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const result = response.data;
+      console.log(result);
+      setApplications((prev) =>
+        prev.map((appInfo) => (appInfo.id === result.id ? result : appInfo))
+      );
+    } catch (err) {
+      console.error("Ошибка загрузки данных:", err.message);
+    } finally {
+      setIsEditing(!isEditing);
+    }
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get("https://6862c75696f0cc4e34baf165.mockapi.io/applications")
+      .then((response) => {
+        setApplications(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -80,10 +113,17 @@ const Main = () => {
         addApplication={addApplication}
         appInfo={appInfo}
       />
-      {!applications.length ? (
-        <Preloader />
-      ) : (
-        <Cards applications={applications} deleteApp={deleteApp} />
+
+      {isLoading && <Preloader />}
+      {!isLoading && !applications.length && <p>Задач нет</p>}
+      {!isLoading && !!applications.length && (
+        <Cards
+          applications={applications}
+          deleteApp={deleteApp}
+          handleClickEditing={handleClickEditing}
+          isEditing={isEditing}
+          changeAppInfo={changeAppInfo}
+        />
       )}
     </div>
   );
