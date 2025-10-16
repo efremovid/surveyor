@@ -14,7 +14,21 @@ const Main = () => {
     place: "",
     work: "",
     date: "",
+    time: "",
+    status: "отправлено инженеру-геодузисту",
   });
+
+  const [isEdit, setIsEdit] = useState(false);
+  const [changeAppInfo, setChangeAppInfo] = useState({});
+
+  const handleChangeNewInput = (e) => {
+    setChangeAppInfo({ ...changeAppInfo, [e.target.name]: e.target.value });
+  };
+
+  const handleClickEdit = (application) => {
+    setChangeAppInfo({ ...application });
+    setIsEdit(!isEdit);
+  };
 
   const handleChange = (e) => {
     setAppInfo({ ...appInfo, [e.target.name]: e.target.value });
@@ -44,6 +58,7 @@ const Main = () => {
       place: "",
       work: "",
       date: "",
+      time: "",
     });
   };
 
@@ -76,6 +91,27 @@ const Main = () => {
       });
   }, []);
 
+  const changeTaskData = async (e, id) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `https://6862c75696f0cc4e34baf165.mockapi.io/applications/${id}`,
+        changeAppInfo,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const result = response.data;
+      console.log(result);
+    } catch (err) {
+      console.error("Ошибка загрузки данных:", err.message);
+    }
+
+    setIsEdit(!isEdit);
+  };
+
   return (
     <div className={styles.container}>
       <Form
@@ -89,7 +125,15 @@ const Main = () => {
       ) : applications.length === 0 ? (
         <p>Нет задач</p>
       ) : (
-        <Cards applications={applications} deleteApp={deleteApp} />
+        <Cards
+          applications={applications}
+          deleteApp={deleteApp}
+          handleClickEdit={handleClickEdit}
+          isEdit={isEdit}
+          handleChangeNewInput={handleChangeNewInput}
+          changeAppInfo={changeAppInfo}
+          changeTaskData={changeTaskData}
+        />
       )}
     </div>
   );
