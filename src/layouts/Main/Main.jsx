@@ -15,12 +15,6 @@ const Main = () => {
     work: "",
     date: "",
   });
-  const [updatedAppInfo, setUpdatedAppInfo] = useState({ ...appInfo });
-  const [isEditing, setIsEditing] = useState(false);
-
-  const handleClickEditing = () => {
-    setIsEditing(!isEditing);
-  };
 
   const handleChange = (e) => {
     setAppInfo({ ...appInfo, [e.target.name]: e.target.value });
@@ -67,30 +61,6 @@ const Main = () => {
     }
   };
 
-  const changeAppInfo = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.put(
-        `https://6862c75696f0cc4e34baf165.mockapi.io/applications/${updatedAppInfo.id}`,
-        updatedAppInfo,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const result = response.data;
-      console.log(result);
-      setApplications((prev) =>
-        prev.map((appInfo) => (appInfo.id === result.id ? result : appInfo))
-      );
-    } catch (err) {
-      console.error("Ошибка загрузки данных:", err.message);
-    } finally {
-      setIsEditing(!isEditing);
-    }
-  };
-
   useEffect(() => {
     setIsLoading(true);
     axios
@@ -114,16 +84,12 @@ const Main = () => {
         appInfo={appInfo}
       />
 
-      {isLoading && <Preloader />}
-      {!isLoading && !applications.length && <p>Задач нет</p>}
-      {!isLoading && !!applications.length && (
-        <Cards
-          applications={applications}
-          deleteApp={deleteApp}
-          handleClickEditing={handleClickEditing}
-          isEditing={isEditing}
-          changeAppInfo={changeAppInfo}
-        />
+      {isLoading ? (
+        <Preloader />
+      ) : applications.length === 0 ? (
+        <p>Нет задач</p>
+      ) : (
+        <Cards applications={applications} deleteApp={deleteApp} />
       )}
     </div>
   );

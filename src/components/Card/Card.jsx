@@ -1,70 +1,28 @@
 import React, { useEffect, useState } from "react";
+import { MdDeleteForever } from "react-icons/md";
 import styles from "./Card.module.scss";
 
-const Card = ({ application, deleteApp, handleClickEditing, isEditing, changeAppInfo }) => {
+const Card = ({ application, deleteApp }) => {
   const date = application.date.split("-").reverse().join("-");
 
   return (
     <div className={styles.container}>
       <div className={styles.main}>
-        {isEditing ? (
-          <input className={styles.editInput} type="text" />
-        ) : (
-          <p>Огрганизация: {application.company}</p>
-        )}
-
-        {isEditing ? (
-          <input className={styles.editInput} type="text" />
-        ) : (
-          <p>Ответственный: {application.name}</p>
-        )}
-
-        {isEditing ? (
-          <input className={styles.editInput} type="text" />
-        ) : (
-          <p>Вид работы: {application.work}</p>
-        )}
-
-        {isEditing ? (
-          <input className={styles.editInput} type="text" />
-        ) : (
-          <p>Зона работ: {application.place}</p>
-        )}
-
-        {isEditing ? (
-          <input className={styles.editInput} type="text" />
-        ) : (
-          <p>Дата: {date}</p>
-        )}
-
-        {isEditing ? (
-          <input className={styles.editInput} type="text" />
-        ) : (
-          <p>Время: {application.time}</p>
-        )}
-
-        {isEditing ? (
-          <input className={styles.editInput} type="text" />
-        ) : (
-          <p>Статус: отправлено инженеру-геодузисту заказчика</p>
-        )}
+        <p>Огрганизация: {application.company}</p>
+        <p>Ответственный: {application.name}</p>
+        <p>Вид работы: {application.work}</p>
+        <p>Зона работ: {application.place}</p>
+        <p>Дата: {date}</p>
+        <p>Время: {application.time}</p>
+        <p>Статус: отправлено инженеру-геодузисту заказчика</p>
       </div>
       <div className={styles.buttons}>
-        {isEditing ? (
-          <button className={styles.btn} onClick={changeAppInfo}>submit</button>
-        ) : (
-          <>
-            <button
-              className={styles.btn}
-              onClick={() => deleteApp(application.id)}
-            >
-              del
-            </button>
-            <button className={styles.btn} onClick={handleClickEditing}>
-              edit
-            </button>
-          </>
-        )}
+        <button
+          className={styles.btn}
+          onClick={() => deleteApp(application.id)}
+        >
+          <MdDeleteForever className={styles.image}/>
+        </button>
       </div>
     </div>
   );
