@@ -1,6 +1,15 @@
 .container {
-    inline-size: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 10px;
+  inline-size: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 10px;
+}
+
+.btns {
+  display: flex;
+
+  button {
+    padding: 10px;
+    border-radius: 5px;
+  }
 }

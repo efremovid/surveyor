@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { MdDeleteForever } from "react-icons/md";
+import { GrEdit } from "react-icons/gr";
+import { FaCheck } from "react-icons/fa";
 import styles from "./Card.module.scss";
 
 const Card = ({
   application,
   deleteApp,
-  handleClickEdit,
-  isEdit,
+  editId,
+  setEditId,
   handleChangeNewInput,
   changeAppInfo,
-  changeTaskData
+  changeTaskData,
 }) => {
   const date = application.date.split("-").reverse().join("-");
+  const isEditingThisCard = editId === application.id;
 
   return (
     <div className={styles.container}>
-      {!isEdit ? (
+      {!isEditingThisCard ? (
         <div className={styles.main}>
-          <p>Огрганизация: {application.company}</p>
+          <p>Организация: {application.company}</p>
           <p>Ответственный: {application.name}</p>
           <p>Вид работы: {application.work}</p>
           <p>Зона работ: {application.place}</p>
@@ -30,28 +33,27 @@ const Card = ({
           <input
             onChange={handleChangeNewInput}
             className={styles.input}
-            value={changeAppInfo.company}
+            value={changeAppInfo.company || ""}
             type="text"
             name="company"
           />
           <input
             onChange={handleChangeNewInput}
             className={styles.input}
-            value={changeAppInfo.name}
+            value={changeAppInfo.name || ""}
             type="text"
             name="name"
           />
           <textarea
             onChange={handleChangeNewInput}
             className={styles.textarea}
-            value={changeAppInfo.work}
-            type="text"
+            value={changeAppInfo.work || ""}
             name="work"
           />
           <input
             onChange={handleChangeNewInput}
             className={styles.input}
-            value={changeAppInfo.place}
+            value={changeAppInfo.place || ""}
             type="text"
             name="place"
           />
@@ -59,18 +61,16 @@ const Card = ({
             <input
               onChange={handleChangeNewInput}
               className={styles.containerItem}
-              value={changeAppInfo.date}
+              value={changeAppInfo.date || ""}
               type="date"
               name="date"
-              placeholder="Дата"
             />
             <input
               onChange={handleChangeNewInput}
               className={styles.containerItem}
               type="time"
               name="time"
-              placeholder="Время"
-              value={changeAppInfo.time}
+              value={changeAppInfo.time || ""}
             />
           </div>
         </div>
@@ -84,10 +84,17 @@ const Card = ({
           <MdDeleteForever className={styles.image} />
         </button>
 
-        {!isEdit ? (
-          <button onClick={() => handleClickEdit(application)}>ред</button>
+        {!isEditingThisCard ? (
+          <button
+            className={styles.btn}
+            onClick={() => setEditId(application.id)}
+          >
+            <GrEdit />
+          </button>
         ) : (
-          <button onClick={(e) => changeTaskData(e, changeAppInfo.id)}>sub</button>
+          <button onClick={(e) => changeTaskData(e, application.id)}>
+            <FaCheck />
+          </button>
         )}
       </div>
     </div>

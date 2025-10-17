@@ -15,19 +15,14 @@ const Main = () => {
     work: "",
     date: "",
     time: "",
-    status: "отправлено инженеру-геодузисту",
+    status: "отправлено инженеру-геодезисту",
   });
 
-  const [isEdit, setIsEdit] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [changeAppInfo, setChangeAppInfo] = useState({});
 
   const handleChangeNewInput = (e) => {
     setChangeAppInfo({ ...changeAppInfo, [e.target.name]: e.target.value });
-  };
-
-  const handleClickEdit = (application) => {
-    setChangeAppInfo({ ...application });
-    setIsEdit(!isEdit);
   };
 
   const handleChange = (e) => {
@@ -47,7 +42,6 @@ const Main = () => {
         }
       );
       const result = response.data;
-      console.log(result);
       setApplications([...applications, result]);
     } catch (err) {
       console.error("Ошибка загрузки данных:", err.message);
@@ -59,6 +53,7 @@ const Main = () => {
       work: "",
       date: "",
       time: "",
+      status: "Отправлено инженеру-геодезисту",
     });
   };
 
@@ -70,7 +65,6 @@ const Main = () => {
       setApplications((prevItems) =>
         prevItems.filter((item) => item.id !== id)
       );
-      console.log("Элемент успешно удален");
     } catch (error) {
       console.error("Ошибка при удалении:", error);
     }
@@ -103,13 +97,15 @@ const Main = () => {
           },
         }
       );
-      const result = response.data;
-      console.log(result);
+      const updatedApp = response.data;
+      setApplications((prevApps) =>
+        prevApps.map((app) => (app.id === id ? updatedApp : app))
+      );
+      setEditId(null);
+      setChangeAppInfo({});
     } catch (err) {
-      console.error("Ошибка загрузки данных:", err.message);
+      console.error("Ошибка при обновлении данных:", err.message);
     }
-
-    setIsEdit(!isEdit);
   };
 
   return (
@@ -128,8 +124,12 @@ const Main = () => {
         <Cards
           applications={applications}
           deleteApp={deleteApp}
-          handleClickEdit={handleClickEdit}
-          isEdit={isEdit}
+          editId={editId}
+          setEditId={(id) => {
+            setEditId(id);
+            const selectedApp = applications.find((app) => app.id === id);
+            setChangeAppInfo(selectedApp); 
+          }}
           handleChangeNewInput={handleChangeNewInput}
           changeAppInfo={changeAppInfo}
           changeTaskData={changeTaskData}
